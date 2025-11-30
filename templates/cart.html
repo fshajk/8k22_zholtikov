@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css"
+          rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1"
+          crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+            crossorigin="anonymous"></script>
+    <style>body { background-color: #f0f0f0; }</style>
+    <link rel="shortcut icon"
+          href='https://cdn2.iconfinder.com/data/icons/round-varieties/60/Rounded_-_High_Ultra_Colour06_-_Shopping_Bag-64.png'>
+    <title>Корзина</title>
+</head>
+<body>
+<div style="margin: 10%;margin-top: 1%;padding: 20px;font-size: 14px;background-color: #fff;border: 1px solid #e0e0e0;border-radius: 6px 6px 6px 6px;">
+    <style>
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding: 15px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .cart-item img {
+            max-width: 50px;
+            height: auto;
+            margin-right: 10px;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+        .quantity-control a {
+            margin: 0 5px;
+        }
+    </style>
+    <div class="container">
+        <h1>Ваша корзина</h1>
+        <div class="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                <div>
+                    <img src="/{{ item.product.img_path }}" style="width: 100%; height: 100%; object-fit: cover;"
+                         alt="Image" onerror="this.src='/static/img/noimg.jpg'; this.alt='noimg.jpg';">
+                    <a href="/products/{{ item.product.product_id }}">
+                        <span>{{ item.product.name }}</span>
+                    </a>
+                </div>
+                <div class="quantity-control">
+                    <div class="text-center mt-4">
+                        <p>
+                            Количество:
+                            <a class="btn btn-sm btn-secondary" href="/sub_to_cart/{{ item.product.product_id }}">-</a>
+                            <span class="quantity">{{ item.quantity }}</span>
+                            <a class="btn btn-sm btn-secondary" href="/add_to_cart/{{ item.product.product_id }}">+</a>
+                        </p>
+                    </div>
+                </div>
+                <span class="item-price">Стоимость: {{ item.cost }} у.е.</span>
+            </div>
+            {% empty %}
+            <br><br><br><br><br><br>
+            <div style="display: grid; place-items: center;">
+                <h4 style="color: gray;">Ваша корзина пуста.</h4>
+            </div>
+            <br><br><br><br><br><br><br><br><br><br>
+            {% endfor %}
+        </div>
+        <div class="total">
+            {% if total_cost %}
+            <h2>Общая стоимость: {{ total_cost }} у.е.</h2>
+            <a class="btn btn-success" href="/submit_order">Заказать</a>
+            <a href="/catalog" class="btn btn-primary">Перейти в каталог</a>
+            {% else %}
+            <div class="text-center mt-4">
+                <a href="/catalog" class="btn btn-primary">Перейти в каталог</a>
+            </div>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

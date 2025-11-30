@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Строительный магазин</title>
+    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
+    <style>
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .card {
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        a:hover {
+            transform: translateY(-5px);
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+        }
+
+        #promo {
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <header class="d-flex flex-wrap justify-content-center py-3 mb-4 border-bottom">
+        <div class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-body-emphasis text-decoration-none">
+            <span class="fs-4">Строительный магазин</span>
+        </div>
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                <a href="catalog" class="nav-link">Каталог</a>
+            </li>
+            {% if user.is_authenticated %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'cart' %}">Корзина</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'orders' %}">Заказы</a>
+            </li>
+            <li class="nav-item">
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button class="nav-link" type="submit">Выйти</button>
+                </form>
+            </li>
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Войти</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="accounts/signup">Регистрация</a>
+            </li>
+            {% endif %}
+        </ul>
+    </header>
+    <div id="promo">
+        <img src="static/img/header.jpg" alt="pic" height="100%" width="100%">
+    </div>
+    {% if user.is_authenticated %}
+    <div style="display: grid; place-items: center;"><p>Привет, {{ user.username }}!</p></div>
+    {% else %}
+    <div style="display: grid; place-items: center;"><p>Вы не вошли на сайт!</p></div>
+    {% endif %}
+    <!-- Карточки товаров -->
+    <h4>Товары</h4>
+    <form action="{% url 'search_catalog' %}" method="GET">
+        {% csrf_token %}
+        <input name="q" type="text" class="form-control" placeholder="Введите поисковый запрос"><br>
+    </form>
+    {% if not list_of_all_products %}
+    <br><br><br><br><br><br>
+    <div style="display: grid; place-items: center;">
+        <h4 style="color: gray;">По вашему запросу ничего не найдено.</h4>
+    </div>
+    <br><br><br><br><br><br><br><br><br><br>
+    {% endif%}
+    <div class="row">
+        {% for product in list_of_all_products %}
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <img src="{{ product.img_path }}" class="card-img-top" alt="{{ product.name }}"
+                     onerror="this.src='/static/img/noimg.jpg'; this.alt='noimg.jpg';">
+                <div class="card-body">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <h6 class="card-text">Описание: <span style="color: blue">{{ product.description }}</span></h6>
+                    <h6 class="card-text"><strong>Цена: {{ product.price }}</strong></h6>
+                    <a href="/products/{{ product.product_id }}" class="btn btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<footer class="bg-dark text-secondary px-4 py-5 text-center">
+    <p class="float-end"><a href="#">Наверх</a></p>
+    <p>Строительный магазин</p>
+</footer>
+
+<!-- Подключение скриптов Bootstrap -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"
+></script>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+</body>
+</html>
